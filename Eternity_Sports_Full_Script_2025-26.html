@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eternity Sports Event – Full Anchoring Script</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0D0D14; --panel:#13131C; --card:#1A1A26; --border:#2C2C3E;
+  --gold:#C9A84C; --gold2:#F0D080; --teal:#3ECFB2; --text:#E6E2F5;
+  --muted:#6E6B88; --a1c:#F07858; --a2c:#58AEF0;
+  --boys:#5AB4E8; --girls:#F07FBF; --glow:rgba(201,168,76,0.13);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--text);font-family:'Syne',sans-serif;font-size:15px;line-height:1.7;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 15% 5%,rgba(201,168,76,0.07) 0%,transparent 55%),radial-gradient(ellipse 50% 60% at 85% 95%,rgba(62,207,178,0.04) 0%,transparent 55%);pointer-events:none;z-index:0}
+
+.wrap{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:52px 20px 100px}
+
+/* ── MASTHEAD ── */
+.masthead{text-align:center;margin-bottom:60px;animation:rise 0.9s ease both}
+.event-badge{display:inline-block;border:1px solid rgba(201,168,76,0.35);padding:6px 20px;border-radius:2px;font-size:10px;letter-spacing:4px;color:var(--gold);text-transform:uppercase;font-weight:600;margin-bottom:22px}
+.masthead h1{font-family:'Cormorant Garamond',serif;font-size:clamp(44px,10vw,88px);font-weight:700;letter-spacing:3px;line-height:1;background:linear-gradient(150deg,#fff 0%,var(--gold2) 45%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+.masthead h2{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,3vw,20px);color:var(--muted);margin-bottom:28px}
+.orn{display:flex;align-items:center;gap:12px;justify-content:center;margin:20px 0}
+.orn span{height:1px;width:60px;background:linear-gradient(90deg,transparent,var(--gold))}
+.orn span.r{transform:scaleX(-1)}
+.orn i{width:7px;height:7px;background:var(--gold);transform:rotate(45deg)}
+
+.guests{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px}
+.gchip{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:8px 16px;text-align:center}
+.gchip .role{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:3px;font-weight:600}
+.gchip .name{font-size:13px;font-weight:700}
+
+.legend{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+.leg{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+.ldot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+
+/* ── PART DIVIDER ── */
+.part-div{text-align:center;margin:56px 0 40px;position:relative}
+.part-div::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent)}
+.part-label{display:inline-block;background:var(--ink);position:relative;z-index:1;padding:0 20px;font-family:'Cormorant Garamond',serif;font-size:clamp(26px,5vw,42px);font-weight:700;background:linear-gradient(135deg,var(--gold2),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:3px}
+.part-sub{font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-top:6px}
+
+/* ── SPORT BLOCK ── */
+.sport-block{margin-bottom:56px;animation:rise 0.5s ease both}
+.sport-banner{display:flex;align-items:center;gap:14px;padding:16px 22px;border-radius:8px 8px 0 0;border:1px solid var(--border);border-bottom:none;position:relative;overflow:hidden}
+.sport-banner::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.35)}
+.sport-emoji{font-size:28px;position:relative;z-index:1;flex-shrink:0}
+.sport-name{font-family:'Syne',sans-serif;font-size:clamp(20px,4vw,28px);font-weight:800;letter-spacing:2px;text-transform:uppercase;position:relative;z-index:1}
+.sport-type{margin-left:auto;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);position:relative;z-index:1}
+
+/* sport colours */
+.s-cricket .sport-banner{background:linear-gradient(135deg,#0d2b1a,#1a4a2e)}
+.s-basketball .sport-banner{background:linear-gradient(135deg,#2b1400,#5a2d00)}
+.s-football .sport-banner{background:linear-gradient(135deg,#0a1628,#1a3258)}
+.s-baseball .sport-banner{background:linear-gradient(135deg,#2b0a0a,#5c1a1a)}
+.s-volleyball .sport-banner{background:linear-gradient(135deg,#1a1a00,#3a3800)}
+.s-kabaddi .sport-banner{background:linear-gradient(135deg,#2b1500,#5c3000)}
+.s-tugofwar .sport-banner{background:linear-gradient(135deg,#150a0a,#3a2020)}
+.s-badminton .sport-banner{background:linear-gradient(135deg,#001a1a,#003838)}
+.s-tabletennis .sport-banner{background:linear-gradient(135deg,#001428,#003060)}
+.s-chess .sport-banner{background:linear-gradient(135deg,#101010,#282828)}
+.s-athletics .sport-banner{background:linear-gradient(135deg,#1a0a2b,#3a1a5c)}
+
+.sport-body{border:1px solid var(--border);border-radius:0 0 8px 8px;background:var(--panel);padding:20px}
+
+/* ── GENDER HEADER ── */
+.gender-head{display:flex;align-items:center;gap:10px;margin:18px 0 12px}
+.gender-head:first-child{margin-top:0}
+.gender-pill{display:flex;align-items:center;gap:7px;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.gp-boys{background:rgba(90,180,232,0.12);border:1px solid rgba(90,180,232,0.3);color:var(--boys)}
+.gp-girls{background:rgba(240,127,191,0.12);border:1px solid rgba(240,127,191,0.3);color:var(--girls)}
+.gender-rule{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+
+/* ── PRIZE ROWS ── */
+.prize-row{display:flex;align-items:stretch;gap:10px;margin-bottom:8px}
+.prize-rank{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:52px;padding:8px 6px;border-radius:5px;text-align:center;flex-shrink:0}
+.rank-1{background:linear-gradient(135deg,rgba(201,168,76,0.2),rgba(201,168,76,0.08));border:1px solid rgba(201,168,76,0.4)}
+.rank-2{background:rgba(180,190,200,0.1);border:1px solid rgba(180,190,200,0.25)}
+.rank-3{background:rgba(180,120,80,0.1);border:1px solid rgba(180,120,80,0.25)}
+.rank-emoji{font-size:16px;line-height:1}
+.rank-label{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:3px;font-family:'JetBrains Mono',monospace}
+.rank-1 .rank-label{color:var(--gold)}
+.rank-2 .rank-label{color:#B4BEC8}
+.rank-3 .rank-label{color:#C87850}
+
+.prize-name{flex:1;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:8px 14px;display:flex;align-items:center}
+.pname{font-weight:700;font-size:14px;color:var(--text)}
+.blank{color:var(--muted);font-style:italic;font-size:13px;border-bottom:1px dashed var(--border);padding-bottom:1px;font-weight:400}
+
+/* ── LINE CARDS ── */
+.lines{margin-top:16px}
+.line{display:grid;grid-template-columns:88px 1fr;border-radius:6px;overflow:hidden;border:1px solid var(--border);background:var(--card);margin-bottom:8px;transition:border-color 0.2s,transform 0.15s}
+.line:hover{border-color:rgba(201,168,76,0.28);transform:translateX(2px)}
+.lwho{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 7px;gap:4px;border-right:1px solid var(--border);min-height:60px}
+.line.a1 .lwho{background:rgba(240,120,88,0.07);border-right-color:rgba(240,120,88,0.22)}
+.line.a2 .lwho{background:rgba(88,174,240,0.07);border-right-color:rgba(88,174,240,0.22)}
+.line.both .lwho{background:rgba(201,168,76,0.08);border-right-color:rgba(201,168,76,0.28)}
+.alabel{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-align:center;line-height:1.3}
+.line.a1 .alabel{color:var(--a1c)}
+.line.a2 .alabel{color:var(--a2c)}
+.line.both .alabel{color:var(--gold)}
+.lbody{padding:10px 16px;display:flex;flex-direction:column;gap:6px;justify-content:center}
+.tone{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;border-radius:20px;width:fit-content}
+.t-w{background:rgba(255,185,90,0.1);color:#FFB95A;border:1px solid rgba(255,185,90,0.22)}
+.t-h{background:rgba(255,80,100,0.1);color:#FF607A;border:1px solid rgba(255,80,100,0.22)}
+.t-c{background:rgba(62,207,178,0.09);color:#3ECFB2;border:1px solid rgba(62,207,178,0.22)}
+.t-g{background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid rgba(201,168,76,0.28)}
+.t-ch{background:rgba(175,115,255,0.1);color:#AF73FF;border:1px solid rgba(175,115,255,0.22)}
+.t-e{background:rgba(255,220,40,0.09);color:#FFDC28;border:1px solid rgba(255,220,40,0.22)}
+.t-p{background:rgba(70,220,110,0.09);color:#46DC6E;border:1px solid rgba(70,220,110,0.22)}
+.t-b{background:rgba(90,180,232,0.1);color:var(--boys);border:1px solid rgba(90,180,232,0.22)}
+.t-gi{background:rgba(240,127,191,0.1);color:var(--girls);border:1px solid rgba(240,127,191,0.22)}
+
+.stext{font-family:'Syne',sans-serif;font-size:14.5px;font-weight:400;line-height:1.75;color:var(--text)}
+.em{color:var(--gold2);font-weight:600}
+.shout{color:#fff;font-weight:700;font-size:15.5px}
+.nm{color:var(--teal);font-weight:700}
+.nm-b{color:var(--boys);font-weight:700}
+.nm-g{color:var(--girls);font-weight:700}
+
+.p{display:inline-block;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.28);color:var(--gold);font-size:9px;font-weight:600;letter-spacing:1.5px;padding:1px 7px;border-radius:3px;vertical-align:middle;margin:0 3px;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+
+.dir{margin:10px 0;padding:8px 14px;border-left:3px solid var(--gold);background:var(--glow);border-radius:0 5px 5px 0;font-size:11.5px;font-style:italic;color:var(--gold)}
+
+/* ── SECTION (opening/closing) ── */
+.sec{margin-bottom:48px;animation:rise 0.6s ease both}
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.sec-icon{font-size:20px}
+.sec-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold)}
+.sec-rule{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+
+/* ── FINALE ── */
+.finale{text-align:center;padding:50px 20px;background:linear-gradient(135deg,rgba(201,168,76,0.06),rgba(62,207,178,0.04));border:1px solid rgba(201,168,76,0.18);border-radius:12px;margin-top:60px}
+.finale-big{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,8vw,72px);font-weight:700;background:linear-gradient(150deg,#fff 0%,var(--gold2) 55%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;margin-bottom:8px;letter-spacing:3px}
+.finale p{color:var(--muted);font-size:11px;letter-spacing:3px;text-transform:uppercase}
+
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:540px){
+  .line{grid-template-columns:68px 1fr}
+  .stext{font-size:13.5px}
+  .prize-row{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══════════ MASTHEAD ═══════════ -->
+<header class="masthead">
+  <div class="event-badge">🏆 Prize Distribution · Anchoring Script</div>
+  <h1>Eternity<br>Sports Event</h1>
+  <h2>Annual Sports Meet 2025 – 2026</h2>
+  <div class="orn"><span></span><i></i><span class="r"></span></div>
+  <div class="guests">
+    <div class="gchip"><div class="role">🎓 Principal</div><div class="name">Dr. F. B. Sayyad</div></div>
+    <div class="gchip"><div class="role">📋 Registrar</div><div class="name">Gorakshnath Deshmukh</div></div>
+    <div class="gchip"><div class="role">🏅 Director of Sports</div><div class="name">Prashant S. Londhe</div></div>
+  </div>
+  <div class="legend">
+    <div class="leg"><div class="ldot" style="background:var(--a1c);box-shadow:0 0 6px var(--a1c)"></div>Anchor 1</div>
+    <div class="leg"><div class="ldot" style="background:var(--a2c);box-shadow:0 0 6px var(--a2c)"></div>Anchor 2</div>
+    <div class="leg"><div class="ldot" style="background:var(--gold);box-shadow:0 0 6px var(--gold)"></div>Both</div>
+    <div class="leg"><div class="ldot" style="background:var(--teal)"></div>Name Highlight</div>
+  </div>
+</header>
+
+
+<!-- ═══════════ OPENING ═══════════ -->
+<div class="sec">
+  <div class="sec-head"><span class="sec-icon">🎤</span><span class="sec-title">Opening &amp; Welcome</span><div class="sec-rule"></div></div>
+
+  <div class="line a1">
+    <div class="lwho"><div class="alabel">ANCHOR 1</div></div>
+    <div class="lbody">
+      <span class="tone t-w">🌅 Warm Welcome</span>
+      <p class="stext"><span class="p">breathe · smile</span> <em class="em">A very, very good evening, everyone!</em> <span class="p">pause</span> A heartfelt welcome to our respected Principal <span class="nm">Dr. F. B. Sayyad sir</span>, our Registrar <span class="nm">Gorakshnath Deshmukh sir</span>, Director of Sports <span class="nm">Prashant S. Londhe sir</span>, our cherished faculty, and every single person here in this hall tonight!</p>
+    </div>
+  </div>
+
+  <div class="line a2">
+    <div class="lwho"><div class="alabel">ANCHOR 2</div></div>
+    <div class="lbody">
+      <span class="tone t-c">🌊 Build Meaning</span>
+      <p class="stext">Tonight, we gather not just to give out trophies. <span class="p">pause 2s</span> We gather to <em class="em">celebrate every early morning, every aching muscle, every moment of doubt that was crushed by sheer will.</em> <span class="p">slow down</span> These athletes didn't just play a sport — they gave a piece of their soul to it.</p>
+    </div>
+  </div>
+
+  <div class="line a1">
+    <div class="lwho"><div class="alabel">ANCHOR 1</div></div>
+    <div class="lbody">
+      <span class="tone t-e">⚡ Energy Up!</span>
+      <p class="stext">From the Cricket Ground to the Basketball Court, from the Football Field to the Athletics Track — the <em class="em">Eternity Sports Event 2025-26</em> has truly been <span class="shout">one for the ages!</span> <span class="p">build up</span> And tonight — we crown our champions!</p>
+    </div>
+  </div>
+
+  <div class="line a2">
+    <div class="lwho"><div class="alabel">ANCHOR 2</div></div>
+    <div class="lbody">
+      <span class="tone t-e">⚡ Peak Kickoff</span>
+      <p class="stext">Ladies and gentlemen — <span class="p">dramatic pause 2s</span> — the <span class="shout">PRIZE DISTRIBUTION CEREMONY</span> of the Eternity Sports Event — is now <span class="shout">OFFICIALLY OPEN! 🎉🏆</span> <span class="p">lead applause · let it roar</span></p>
+    </div>
+  </div>
+
+  <div class="line a1">
+    <div class="lwho"><div class="alabel">ANCHOR 1</div></div>
+    <div class="lbody">
+      <span class="tone t-g">🎖️ Formal</span>
+      <p class="stext">We warmly request our honoured guests — <span class="nm">Dr. Sayyad sir, Deshmukh sir, and Londhe sir</span> — to kindly grace the stage and present today's awards. <span class="p">wait for them to be seated</span></p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     PART 1 — SPORTS
+══════════════════════════════════════════════ -->
+<div class="part-div">
+  <div class="part-label">⚽ Part I — Sports</div>
+  <div class="part-sub">10 Events · Team &amp; Individual</div>
+</div>
+
+
+<!-- ─────────────────── CRICKET ─────────────────── -->
+<div class="sport-block s-cricket">
+  <div class="sport-banner">
+    <span class="sport-emoji">🏏</span>
+    <span class="sport-name">Cricket</span>
+    <span class="sport-type">Team Event</span>
+  </div>
+  <div class="sport-body">
+
+    <!-- Prize Reference -->
+    <div class="gender-head"><div class="gender-pill gp-boys">👦 Boys</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Team ACE</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">AISE Gladiators</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Chatrapati Warriors</span></div></div>
+
+    <div class="gender-head" style="margin-top:14px"><div class="gender-pill gp-girls">👧 Girls</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Lady Legends</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">Elite IX</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Cyber Strikers</span></div></div>
+
+    <!-- Script Lines -->
+    <div class="lines">
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-h">🔥 Sport Intro</span><p class="stext">Ladies and gentlemen — the sport of <em class="em">legends, the game of patience and power, the king of all bat-and-ball games.</em> <span class="p">pause</span> We are talking about <span class="shout">CRICKET! 🏏</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-c">🎯 Set the Scene</span><p class="stext">Twenty-two players. One pitch. And the kind of competitive fire that had every spectator absolutely <em class="em">glued to the ground.</em> <span class="p">pause</span> The battles fought on that Cricket Ground were nothing short of extraordinary.</p></div></div>
+
+      <div class="dir">📋 Boys category first. Request dignitaries to come forward for the presentation.</div>
+
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-b">👦 Boys Category</span><p class="stext">Starting with the <em class="em">Boys Cricket</em> awards! <span class="p">pause</span> For the team that showed incredible fight right till the <em class="em">last ball of the last over</em> — the <em class="em">2nd Runner Up</em> position goes to… <span class="p">pause 2s</span> <span class="nm-b">Chatrapati Warriors!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-p">👏 Runner Up</span><p class="stext">And a big, big hand for the team that never stopped swinging — our <em class="em">1st Runner Up</em>… <span class="p">pause</span> <span class="nm-b">AISE Gladiators!</span> What a campaign they've had! <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-h">🔥 Build Up</span><p class="stext">And now — the team that <em class="em">bowled out the competition, batted with brilliance,</em> and stood tall when it mattered most. <span class="p">dramatic pause 3s</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Winner!</span><p class="stext">The <span class="shout">WINNERS</span> of Boys Cricket — <span class="p">pause 2s</span> — <span class="nm-b" style="font-size:17px">TEAM ACE!! 🏆🎉</span> <span class="p">lead applause loud!</span></p></div></div>
+
+      <div class="dir">📋 Allow Team ACE to receive the trophy. Then transition to Girls category.</div>
+
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 Girls Category</span><p class="stext">And now — let's hear it louder for the <em class="em">Girls of Cricket!</em> <span class="p">pause · energy up</span> These women proved on that pitch that cricket is not just a gentleman's game — it is a <span class="shout">champion's game!</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-gi">👧 2nd Runner Up</span><p class="stext">The <em class="em">2nd Runner Up</em> of Girls Cricket — a team that fielded with fire and batted with belief — <span class="nm-g">Cyber Strikers!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 Runner Up</span><p class="stext">Our <em class="em">1st Runner Up</em> — who took this competition down to the wire and gave us some of the most thrilling moments of the Meet — <span class="nm-g">Elite IX!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Girls Winner!</span><p class="stext">And the <span class="shout">WINNERS</span> of Girls Cricket — <span class="p">pause 2s</span> — <span class="nm-g" style="font-size:17px">LADY LEGENDS!! 🏆👏</span> <span class="p">massive applause!</span> Absolutely deserved — congratulations!</p></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─────────────────── BASKETBALL ─────────────────── -->
+<div class="sport-block s-basketball">
+  <div class="sport-banner">
+    <span class="sport-emoji">🏀</span>
+    <span class="sport-name">Basketball</span>
+    <span class="sport-type">Team Event</span>
+  </div>
+  <div class="sport-body">
+    <div class="gender-head"><div class="gender-pill gp-boys">👦 Boys</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">OPIUM HOOPERS (BE – CS)</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">BALLERS (BE – MECH)</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">BE (AI&DS)</span></div></div>
+
+    <div class="gender-head" style="margin-top:14px"><div class="gender-pill gp-girls">👧 Girls</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Shooting Stars</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+
+    <div class="lines">
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-h">🔥 Sport Intro</span><p class="stext">The court was electric. The sneakers were squeaking. The crowd was <em class="em">absolutely roaring.</em> <span class="p">pause</span> Ladies and gentlemen — <span class="shout">BASKETBALL! 🏀</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-c">🎯 Set the Scene</span><p class="stext">Every dribble, every three-pointer, every buzzer-beat moment — Basketball at Eternity 2025-26 delivered <em class="em">pure, unfiltered drama from tip-off to the final whistle.</em></p></div></div>
+
+      <div class="dir">📋 Request dignitaries to the stage for Boys Basketball awards.</div>
+
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-b">👦 Boys — 2nd Runner Up</span><p class="stext">Boys Basketball — <em class="em">2nd Runner Up!</em> A team that brought <em class="em">energy, athleticism, and relentless hustle</em> to the court — <span class="nm-b">BE AI&amp;DS!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-p">👏 Runner Up</span><p class="stext">1st Runner Up — the team that came so, so close to the top and made every possession count — <span class="nm-b">BALLERS, BE Mechanical!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Winner!</span><p class="stext">And the <span class="shout">CHAMPIONS</span> of Boys Basketball — the team that <em class="em">dominated the paint, owned the arc,</em> and took home the gold — <span class="p">pause 2s</span> <span class="nm-b" style="font-size:17px">OPIUM HOOPERS — BE Computer Science!! 🏆</span> <span class="p">big applause!</span></p></div></div>
+
+      <div class="dir">📋 Girls Basketball now.</div>
+
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 Girls Intro</span><p class="stext">And for Girls Basketball — these young women proved that <em class="em">the court belongs to anyone with the courage to step onto it.</em> <span class="p">pause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-gi">👧 2nd Runner Up</span><p class="stext">Girls Basketball 2nd Runner Up — <span class="nm-g">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 Runner Up</span><p class="stext">1st Runner Up of Girls Basketball — <span class="nm-g">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Girls Winner!</span><p class="stext">And the <span class="shout">WINNERS</span> of Girls Basketball — <span class="p">pause 2s</span> — <span class="nm-g" style="font-size:17px">SHOOTING STARS!! 🏆👏</span> <span class="p">applause!</span></p></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─────────────────── FOOTBALL ─────────────────── -->
+<div class="sport-block s-football">
+  <div class="sport-banner">
+    <span class="sport-emoji">⚽</span>
+    <span class="sport-name">Football</span>
+    <span class="sport-type">Team Event</span>
+  </div>
+  <div class="sport-body">
+    <div class="gender-head"><div class="gender-pill gp-boys">👦 Boys</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">BE AIDS</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">Red Devils</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Vanguard FC</span></div></div>
+
+    <div class="gender-head" style="margin-top:14px"><div class="gender-pill gp-girls">👧 Girls</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+
+    <div class="lines">
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-h">🔥 Sport Intro</span><p class="stext">They call it <em class="em">the beautiful game</em> for a reason. <span class="p">pause</span> Ninety minutes. Eleven players. One goal. And the kind of passion that makes <em class="em">hearts race and voices go hoarse.</em> <span class="p">pause</span> It's time for — <span class="shout">FOOTBALL! ⚽</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-c">🎯 Build</span><p class="stext">The tackles, the goals, the <em class="em">goalkeeper diving at the last second</em> — Football at Eternity was everything a fan could ask for and <em class="em">so much more.</em></p></div></div>
+
+      <div class="dir">📋 Request dignitaries for Boys Football awards.</div>
+
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-b">👦 2nd Runner Up</span><p class="stext">Boys Football — 2nd Runner Up. A team that <em class="em">played with heart, pressed with intent,</em> and made every match a spectacle — <span class="nm-b">Vanguard FC!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-p">👏 Runner Up</span><p class="stext">The 1st Runner Up — a side that showed <em class="em">defensive steel and attacking brilliance</em> in equal measure — <span class="nm-b">Red Devils!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-e">⚡ Winner!</span><p class="stext">And the team that <em class="em">outplayed, outran, and outlasted</em> every opponent on that field — <span class="p">pause 3s</span> — the <span class="shout">CHAMPIONS</span> of Boys Football — <span class="nm-b" style="font-size:17px">BE AIDS!! 🏆⚽</span> <span class="p">big applause!</span></p></div></div>
+
+      <div class="dir">📋 Girls Football now.</div>
+
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-gi">👧 Girls Intro</span><p class="stext">Now for the women who showed that <em class="em">power, skill, and teamwork</em> have no gender — Girls Football! <span class="p">pause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 2nd Runner Up</span><p class="stext">2nd Runner Up, Girls Football — <span class="nm-g">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-gi">👧 Runner Up</span><p class="stext">1st Runner Up, Girls Football — <span class="nm-g">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-e">⚡ Girls Winner!</span><p class="stext">And the <span class="shout">WINNERS</span> of Girls Football — <span class="p">pause 2s</span> — <span class="nm-g" style="font-size:17px">[_______________]!! 🏆⚽</span> <span class="p">applause!</span></p></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─────────────────── BASEBALL ─────────────────── -->
+<div class="sport-block s-baseball">
+  <div class="sport-banner">
+    <span class="sport-emoji">⚾</span>
+    <span class="sport-name">Baseball</span>
+    <span class="sport-type">Team Event</span>
+  </div>
+  <div class="sport-body">
+    <div class="gender-head"><div class="gender-pill gp-boys">👦 Boys</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Power Swingers</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">The OG's</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Thunder Strikers</span></div></div>
+
+    <div class="gender-head" style="margin-top:14px"><div class="gender-pill gp-girls">👧 Girls</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+
+    <div class="lines">
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-h">🔥 Sport Intro</span><p class="stext">Home runs, strikeouts, and bases loaded with tension — <span class="p">pause</span> Baseball at Eternity was a <em class="em">masterclass in power, precision, and team coordination.</em> <span class="shout">Let's hear it for Baseball! ⚾</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-b">👦 2nd Runner Up</span><p class="stext">Boys Baseball — 2nd Runner Up. The team that <em class="em">swung hard, ran fast, and never gave up on the diamond</em> — <span class="nm-b">Thunder Strikers!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-p">👏 Runner Up</span><p class="stext">1st Runner Up — the originals who brought <em class="em">old-school grit to a modern game</em> — <span class="nm-b">The OG's!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Winner!</span><p class="stext">And the Boys Baseball <span class="shout">CHAMPIONS</span> — the team that <em class="em">hit it out of the park</em> every single time — <span class="p">pause 2s</span> <span class="nm-b" style="font-size:17px">POWER SWINGERS!! 🏆⚾</span> <span class="p">applause!</span></p></div></div>
+
+      <div class="dir">📋 Girls Baseball now.</div>
+
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 Girls Intro</span><p class="stext">And now — Girls Baseball! These players showed <em class="em">nerve, talent, and absolute competitive fire</em> on every pitch. <span class="p">pause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-gi">👧 2nd Runner Up</span><p class="stext">2nd Runner Up, Girls Baseball — <span class="nm-g">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 Runner Up</span><p class="stext">1st Runner Up, Girls Baseball — <span class="nm-g">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Girls Winner!</span><p class="stext">And the <span class="shout">WINNERS</span> of Girls Baseball — <span class="p">pause 2s</span> — <span class="nm-g" style="font-size:17px">[_______________]!! 🏆⚾</span> <span class="p">applause!</span></p></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─────────────────── VOLLEYBALL ─────────────────── -->
+<div class="sport-block s-volleyball">
+  <div class="sport-banner">
+    <span class="sport-emoji">🏐</span>
+    <span class="sport-name">Volleyball</span>
+    <span class="sport-type">Team Event</span>
+  </div>
+  <div class="sport-body">
+    <div class="gender-head"><div class="gender-pill gp-boys">👦 Boys</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="gender-head" style="margin-top:14px"><div class="gender-pill gp-girls">👧 Girls</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+
+    <div class="lines">
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-h">🔥 Sport Intro</span><p class="stext">The spike that silences a crowd. The dig that saves the point. The set that sets up glory. <span class="p">pause</span> Ladies and gentlemen — <span class="shout">VOLLEYBALL! 🏐</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-c">🎯 Build</span><p class="stext">Every point in Volleyball is a <em class="em">story of six players moving as one</em> — covering every inch of the court with precision and passion.</p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-b">👦 2nd Runner Up</span><p class="stext">Boys Volleyball — 2nd Runner Up — <span class="nm-b">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-p">👏 Runner Up</span><p class="stext">1st Runner Up — Boys Volleyball — <span class="nm-b">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-e">⚡ Winner!</span><p class="stext">Boys Volleyball <span class="shout">CHAMPIONS</span> — <span class="p">pause 2s</span> — <span class="nm-b" style="font-size:17px">[_______________]!! 🏆🏐</span> <span class="p">applause!</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-gi">👧 Girls Intro</span><p class="stext">And now — the <em class="em">Girls of Volleyball!</em> The energy, the serves, the spikes — absolutely sensational. <span class="p">pause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 2nd Runner Up</span><p class="stext">2nd Runner Up, Girls Volleyball — <span class="nm-g">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-gi">👧 Runner Up</span><p class="stext">1st Runner Up, Girls Volleyball — <span class="nm-g">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-e">⚡ Girls Winner!</span><p class="stext">Girls Volleyball <span class="shout">CHAMPIONS</span> — <span class="p">pause 2s</span> — <span class="nm-g" style="font-size:17px">[_______________]!! 🏆🏐</span> <span class="p">applause!</span></p></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─────────────────── KABADDI ─────────────────── -->
+<div class="sport-block s-kabaddi">
+  <div class="sport-banner">
+    <span class="sport-emoji">🤼</span>
+    <span class="sport-name">Kabaddi</span>
+    <span class="sport-type">Team Event</span>
+  </div>
+  <div class="sport-body">
+    <div class="gender-head"><div class="gender-pill gp-boys">👦 Boys</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="gender-head" style="margin-top:14px"><div class="gender-pill gp-girls">👧 Girls</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+
+    <div class="lines">
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-h">🔥 Desi Pride</span><p class="stext">Our very own, our <em class="em">desi pride,</em> a sport that is <em class="em">raw, real, and runs through our blood!</em> <span class="p">pause — raise energy</span> <span class="shout">KABADDI — KABADDI — KABADDI! 🤼</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-c">🎯 Build</span><p class="stext">The raid, the tackle, the <em class="em">last-breath struggle on the mat</em> — Kabaddi at Eternity was every bit as intense as the name promises. Let's celebrate these warriors!</p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-b">👦 2nd Runner Up</span><p class="stext">Boys Kabaddi — 2nd Runner Up — <span class="nm-b">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-p">👏 Runner Up</span><p class="stext">1st Runner Up — Boys Kabaddi — <span class="nm-b">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Winner!</span><p class="stext">Boys Kabaddi <span class="shout">CHAMPIONS</span> — <span class="p">pause 2s</span> — <span class="nm-b" style="font-size:17px">[_______________]!! 🏆🤼</span> <span class="p">applause!</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 Girls Intro</span><p class="stext">And now the <em class="em">Girls who raided the mat</em> with fearlessness and fire — Girls Kabaddi! <span class="p">pause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-gi">👧 2nd Runner Up</span><p class="stext">2nd Runner Up, Girls Kabaddi — <span class="nm-g">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 Runner Up</span><p class="stext">1st Runner Up, Girls Kabaddi — <span class="nm-g">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Girls Winner!</span><p class="stext">Girls Kabaddi <span class="shout">CHAMPIONS</span> — <span class="p">pause 2s</span> — <span class="nm-g" style="font-size:17px">[_______________]!! 🏆🤼</span> <span class="p">applause!</span></p></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─────────────────── TUG OF WAR ─────────────────── -->
+<div class="sport-block s-tugofwar">
+  <div class="sport-banner">
+    <span class="sport-emoji">🪢</span>
+    <span class="sport-name">Tug of War</span>
+    <span class="sport-type">Team Event</span>
+  </div>
+  <div class="sport-body">
+    <div class="gender-head"><div class="gender-pill gp-boys">👦 Boys</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="gender-head" style="margin-top:14px"><div class="gender-pill gp-girls">👧 Girls</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+
+    <div class="lines">
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-h">🔥 Sport Intro</span><p class="stext">One rope. Two teams. <em class="em">And the whole world reduced to that single moment of pull.</em> <span class="p">pause</span> Where strength meets strategy and <em class="em">every muscle screams — <span class="shout">DO NOT LET GO!</span></em> — it's <span class="shout">TUG OF WAR! 🪢</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-b">👦 2nd Runner Up</span><p class="stext">Boys Tug of War — 2nd Runner Up — <span class="nm-b">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-p">👏 Runner Up</span><p class="stext">1st Runner Up — Boys Tug of War — <span class="nm-b">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-e">⚡ Winner!</span><p class="stext">Boys Tug of War <span class="shout">CHAMPIONS</span> — they never let go — <span class="p">pause 2s</span> — <span class="nm-b" style="font-size:17px">[_______________]!! 🏆🪢</span> <span class="p">applause!</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-gi">👧 Girls Intro</span><p class="stext">And the <em class="em">Girls who pulled with everything they had</em> — absolute strength and solidarity! Girls Tug of War! <span class="p">pause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 2nd Runner Up</span><p class="stext">2nd Runner Up, Girls Tug of War — <span class="nm-g">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-gi">👧 Runner Up</span><p class="stext">1st Runner Up, Girls Tug of War — <span class="nm-g">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-e">⚡ Girls Winner!</span><p class="stext">Girls Tug of War <span class="shout">CHAMPIONS</span> — <span class="p">pause 2s</span> — <span class="nm-g" style="font-size:17px">[_______________]!! 🏆🪢</span> <span class="p">applause!</span></p></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─────────────────── BADMINTON ─────────────────── -->
+<div class="sport-block s-badminton">
+  <div class="sport-banner">
+    <span class="sport-emoji">🏸</span>
+    <span class="sport-name">Badminton</span>
+    <span class="sport-type">Individual / Team Event</span>
+  </div>
+  <div class="sport-body">
+    <div class="gender-head"><div class="gender-pill gp-boys">👦 Boys</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="gender-head" style="margin-top:14px"><div class="gender-pill gp-girls">👧 Girls</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+
+    <div class="lines">
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-h">🔥 Sport Intro</span><p class="stext"><em class="em">Lightning-fast reflexes. Razor-sharp precision. A smash that the opponent never saw coming.</em> <span class="p">pause</span> Ladies and gentlemen — <span class="shout">BADMINTON! 🏸</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-b">👦 2nd Runner Up</span><p class="stext">Boys Badminton — 2nd Runner Up — <span class="nm-b">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-p">👏 Runner Up</span><p class="stext">1st Runner Up — Boys Badminton — <span class="nm-b">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Winner!</span><p class="stext">Boys Badminton <span class="shout">CHAMPION</span> — <span class="p">pause 2s</span> — <span class="nm-b" style="font-size:17px">[_______________]!! 🏆🏸</span> <span class="p">applause!</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 Girls Intro</span><p class="stext">And now — the <em class="em">Girls who owned the shuttle court</em> with grace and power in equal measure! Girls Badminton! <span class="p">pause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-gi">👧 2nd Runner Up</span><p class="stext">2nd Runner Up, Girls Badminton — <span class="nm-g">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 Runner Up</span><p class="stext">1st Runner Up, Girls Badminton — <span class="nm-g">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Girls Winner!</span><p class="stext">Girls Badminton <span class="shout">CHAMPION</span> — <span class="p">pause 2s</span> — <span class="nm-g" style="font-size:17px">[_______________]!! 🏆🏸</span> <span class="p">applause!</span></p></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─────────────────── TABLE TENNIS ─────────────────── -->
+<div class="sport-block s-tabletennis">
+  <div class="sport-banner">
+    <span class="sport-emoji">🏓</span>
+    <span class="sport-name">Table Tennis</span>
+    <span class="sport-type">Individual Event</span>
+  </div>
+  <div class="sport-body">
+    <div class="gender-head"><div class="gender-pill gp-boys">👦 Boys</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="gender-head" style="margin-top:14px"><div class="gender-pill gp-girls">👧 Girls</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+
+    <div class="lines">
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-h">🔥 Sport Intro</span><p class="stext">The fastest hands on campus. The quickest eyes in the room. <span class="p">pause</span> A sport where <em class="em">milliseconds separate winners from losers</em> — <span class="shout">TABLE TENNIS! 🏓</span> Spin. Speed. Nerve.</p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-b">👦 2nd Runner Up</span><p class="stext">Boys Table Tennis — 2nd Runner Up — <span class="nm-b">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-p">👏 Runner Up</span><p class="stext">1st Runner Up — Boys Table Tennis — <span class="nm-b">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-e">⚡ Winner!</span><p class="stext">Boys Table Tennis <span class="shout">CHAMPION</span> — <span class="p">pause 2s</span> — <span class="nm-b" style="font-size:17px">[_______________]!! 🏆🏓</span> <span class="p">applause!</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-gi">👧 Girls Intro</span><p class="stext">And the <em class="em">Girls who spun the ball and the competition</em> into a frenzy — Girls Table Tennis! <span class="p">pause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 2nd Runner Up</span><p class="stext">2nd Runner Up, Girls Table Tennis — <span class="nm-g">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-gi">👧 Runner Up</span><p class="stext">1st Runner Up, Girls Table Tennis — <span class="nm-g">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-e">⚡ Girls Winner!</span><p class="stext">Girls Table Tennis <span class="shout">CHAMPION</span> — <span class="p">pause 2s</span> — <span class="nm-g" style="font-size:17px">[_______________]!! 🏆🏓</span> <span class="p">applause!</span></p></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─────────────────── CHESS ─────────────────── -->
+<div class="sport-block s-chess">
+  <div class="sport-banner">
+    <span class="sport-emoji">♟️</span>
+    <span class="sport-name">Chess</span>
+    <span class="sport-type">Mind Sport</span>
+  </div>
+  <div class="sport-body">
+    <div class="gender-head"><div class="gender-pill gp-boys">👦 Boys</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="gender-head" style="margin-top:14px"><div class="gender-pill gp-girls">👧 Girls</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="blank">[_____________ — to be filled]</span></div></div>
+
+    <div class="lines">
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-c">🧠 Mind Sport Intro</span><p class="stext"><span class="p">soften voice · slow</span> Not every battle is fought with the body. Some battles are fought entirely <em class="em">within the mind.</em> <span class="p">pause 2s</span> Sixty-four squares. Thirty-two pieces. Infinite possibilities. <span class="p">pause</span> Ladies and gentlemen — <span class="shout">CHESS. ♟️</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-c">🎯 Build</span><p class="stext">These players sat across each other, <em class="em">stared into each other's strategy, and played their way to victory</em> one brilliant move at a time. Let us celebrate the grandmasters of Eternity!</p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-b">👦 2nd Runner Up</span><p class="stext">Boys Chess — 2nd Runner Up — a player of <em class="em">exceptional tactical skill</em> — <span class="nm-b">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-p">👏 Runner Up</span><p class="stext">1st Runner Up — Boys Chess — whose <em class="em">game was sharp from the first move</em> — <span class="nm-b">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Winner!</span><p class="stext">And the Boys Chess <span class="shout">CHAMPION</span> — the one who called <em class="em">checkmate</em> when it mattered most — <span class="p">pause 2s</span> — <span class="nm-b" style="font-size:17px">[_______________]!! 🏆♟️</span> <span class="p">applause!</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 Girls Intro</span><p class="stext">And the <em class="em">Girls whose minds were the most powerful weapon</em> on the entire campus — Girls Chess! <span class="p">pause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-gi">👧 2nd Runner Up</span><p class="stext">2nd Runner Up, Girls Chess — <span class="nm-g">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 Runner Up</span><p class="stext">1st Runner Up, Girls Chess — <span class="nm-g">[_______________]</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Girls Winner!</span><p class="stext">Girls Chess <span class="shout">CHAMPION</span> — the ultimate <em class="em">grandmaster of Eternity</em> — <span class="p">pause 2s</span> — <span class="nm-g" style="font-size:17px">[_______________]!! 🏆♟️</span> <span class="p">applause!</span></p></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     PART 2 — ATHLETICS
+══════════════════════════════════════════════ -->
+<div class="part-div">
+  <div class="part-label">🏃 Part II — Athletics</div>
+  <div class="part-sub">8 Track &amp; Field Events · Individual</div>
+</div>
+
+<div class="line a1" style="margin-bottom:20px"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-h">🔥 Athletics Intro</span><p class="stext">And now we move to the most ancient, the most raw, the most <em class="em">pure form of sport in the world.</em> <span class="p">pause · energy rises</span> No team. No equipment. Just <em class="em">one human being against the clock, against gravity, against their own limits.</em> <span class="p">pause</span> Ladies and gentlemen — the <span class="shout">ATHLETICS EVENTS</span> of Eternity 2025-26! 🏃‍♂️🏃‍♀️</p></div></div>
+<div class="line a2" style="margin-bottom:36px"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-c">🎯 Set the Stage</span><p class="stext">These champions rose at dawn, ran in rain, threw through fatigue, and <em class="em">jumped past every boundary that tried to hold them back.</em> Let us celebrate them — one glorious event at a time!</p></div></div>
+
+
+<!-- ─────────────────── 100m ─────────────────── -->
+<div class="sport-block s-athletics">
+  <div class="sport-banner">
+    <span class="sport-emoji">💨</span>
+    <span class="sport-name">100 Metre Sprint</span>
+    <span class="sport-type">Track Event</span>
+  </div>
+  <div class="sport-body">
+    <div class="gender-head"><div class="gender-pill gp-boys">👦 Boys</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Vedant Gawali</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">Ryan Manuel</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Abhishek Latwal</span></div></div>
+    <div class="gender-head" style="margin-top:14px"><div class="gender-pill gp-girls">👧 Girls</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Tanvi Salunkhe</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">Vaishnavi Godage</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Shalmalie Satkar</span></div></div>
+
+    <div class="lines">
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-e">⚡ 100m Intro</span><p class="stext">Ten seconds. <span class="p">pause</span> That's all it takes to find out who is the <em class="em">fastest person on campus.</em> <span class="p">pause · build</span> The 100 metre sprint — pure speed, pure adrenaline. <span class="shout">LET'S GO! 💨</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-b">👦 2nd Runner Up</span><p class="stext">Boys 100m — 2nd Runner Up — a sprinter who <em class="em">exploded off the blocks</em> — <span class="nm-b">Abhishek Latwal!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-p">👏 Runner Up</span><p class="stext">1st Runner Up — who ran <em class="em">like the track was on fire</em> — <span class="nm-b">Ryan Manuel!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Winner!</span><p class="stext">And the <span class="shout">FASTEST</span> man of Eternity 2025-26 — 100m Boys Champion — <span class="p">pause 2s</span> — <span class="nm-b" style="font-size:17px">VEDANT GAWALI!! 🏆💨</span> <span class="p">big applause!</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 Girls</span><p class="stext">And the <em class="em">Girls who blazed down that track</em> — Girls 100m! <span class="p">pause</span> 2nd Runner Up — <span class="nm-g">Shalmalie Satkar!</span> <span class="p">applause</span> 1st Runner Up — <span class="nm-g">Vaishnavi Godage!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Girls Winner!</span><p class="stext">And the <span class="shout">FASTEST</span> woman of Eternity — 100m Girls Champion — <span class="p">pause 2s</span> — <span class="nm-g" style="font-size:17px">TANVI SALUNKHE!! 🏆💨</span> <span class="p">applause!</span></p></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─────────────────── 200m ─────────────────── -->
+<div class="sport-block s-athletics">
+  <div class="sport-banner">
+    <span class="sport-emoji">🏃</span>
+    <span class="sport-name">200 Metre Sprint</span>
+    <span class="sport-type">Track Event</span>
+  </div>
+  <div class="sport-body">
+    <div class="gender-head"><div class="gender-pill gp-boys">👦 Boys</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Ryan Manuel</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">Yash Dhotre</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Vedant Gawali</span></div></div>
+    <div class="gender-head" style="margin-top:14px"><div class="gender-pill gp-girls">👧 Girls</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Vaishnavi Godage</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">Tanvi Salunkhe</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Anushka Kedar</span></div></div>
+
+    <div class="lines">
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-h">🔥 200m Intro</span><p class="stext">Twice the distance — twice the strategy. The 200 metres isn't just about legs — it's about <em class="em">cornering with brilliance and finishing with fire.</em> Boys 200m — 2nd Runner Up: <span class="nm-b">Vedant Gawali!</span> <span class="p">applause</span> 1st Runner Up: <span class="nm-b">Yash Dhotre!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-e">⚡ Boys Winner!</span><p class="stext">And the 200m Boys <span class="shout">CHAMPION</span> — back on the podium with pure speed — <span class="p">pause 2s</span> — <span class="nm-b" style="font-size:17px">RYAN MANUEL!! 🏆🏃</span> <span class="p">applause!</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-gi">👧 Girls 200m</span><p class="stext">Girls 200m — 2nd Runner Up: <span class="nm-g">Anushka Kedar!</span> <span class="p">applause</span> 1st Runner Up: <span class="nm-g">Tanvi Salunkhe!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-e">⚡ Girls Winner!</span><p class="stext">Girls 200m <span class="shout">CHAMPION</span> — <span class="p">pause 2s</span> — <span class="nm-g" style="font-size:17px">VAISHNAVI GODAGE!! 🏆🏃‍♀️</span> <span class="p">applause!</span></p></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─────────────────── 400m ─────────────────── -->
+<div class="sport-block s-athletics">
+  <div class="sport-banner">
+    <span class="sport-emoji">🌀</span>
+    <span class="sport-name">400 Metre Run</span>
+    <span class="sport-type">Track Event</span>
+  </div>
+  <div class="sport-body">
+    <div class="gender-head"><div class="gender-pill gp-boys">👦 Boys</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Prithvi Adhane</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">Om Dholi</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Darshan Patil</span></div></div>
+    <div class="gender-head" style="margin-top:14px"><div class="gender-pill gp-girls">👧 Girls</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Pranali Lokhande</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">Sakshi Bayas</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Anushka Kedar</span></div></div>
+
+    <div class="lines">
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-h">🔥 400m Intro</span><p class="stext">One full lap of the track — where <em class="em">speed and stamina wage war inside your lungs</em> — and only the strongest mind wins. Boys 400m — 2nd Runner Up: <span class="nm-b">Darshan Patil!</span> <span class="p">applause</span> 1st Runner Up: <span class="nm-b">Om Dholi!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Boys Winner!</span><p class="stext">400m Boys <span class="shout">CHAMPION</span> — who ran that final bend like it was the beginning — <span class="p">pause 2s</span> — <span class="nm-b" style="font-size:17px">PRITHVI ADHANE!! 🏆🌀</span> <span class="p">applause!</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 Girls 400m</span><p class="stext">Girls 400m — 2nd Runner Up: <span class="nm-g">Anushka Kedar!</span> <span class="p">applause</span> 1st Runner Up: <span class="nm-g">Sakshi Bayas!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Girls Winner!</span><p class="stext">Girls 400m <span class="shout">CHAMPION</span> — <span class="p">pause 2s</span> — <span class="nm-g" style="font-size:17px">PRANALI LOKHANDE!! 🏆🌀</span> <span class="p">applause!</span></p></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─────────────────── 5KM ─────────────────── -->
+<div class="sport-block s-athletics">
+  <div class="sport-banner">
+    <span class="sport-emoji">🛤️</span>
+    <span class="sport-name">5 Kilometre Run</span>
+    <span class="sport-type">Distance Event</span>
+  </div>
+  <div class="sport-body">
+    <div class="gender-head"><div class="gender-pill gp-boys">👦 Boys</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Harshit Khajuria</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">Parikshit Sandbhor</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Prithvi Adhane</span></div></div>
+    <div class="gender-head" style="margin-top:14px"><div class="gender-pill gp-girls">👧 Girls</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Pranali Lokhande</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">Srushti Shinde</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Maheshwari Magar</span></div></div>
+
+    <div class="lines">
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-c">🧠 5km Intro</span><p class="stext">Five kilometres. <span class="p">pause · slow</span> This isn't just a run — it's a <em class="em">battle of mind over body</em> for every single step. These athletes didn't just finish — they <em class="em">conquered.</em> Boys 5km — 2nd Runner Up: <span class="nm-b">Prithvi Adhane!</span> <span class="p">applause</span> 1st Runner Up: <span class="nm-b">Parikshit Sandbhor!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-e">⚡ Boys Winner!</span><p class="stext">5km Boys <span class="shout">CHAMPION</span> — who set the pace and <em class="em">never looked back</em> — <span class="p">pause 2s</span> — <span class="nm-b" style="font-size:17px">HARSHIT KHAJURIA!! 🏆🛤️</span> <span class="p">applause!</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-gi">👧 Girls 5km</span><p class="stext">Girls 5km — 2nd Runner Up: <span class="nm-g">Maheshwari Magar!</span> <span class="p">applause</span> 1st Runner Up: <span class="nm-g">Srushti Shinde!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-e">⚡ Girls Winner!</span><p class="stext">Girls 5km <span class="shout">CHAMPION</span> — <span class="p">pause 2s</span> — <span class="nm-g" style="font-size:17px">PRANALI LOKHANDE!! 🏆🛤️</span> <span class="p">applause!</span> What a double champion she is!</p></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─────────────────── SHOT PUT ─────────────────── -->
+<div class="sport-block s-athletics">
+  <div class="sport-banner">
+    <span class="sport-emoji">🏋️</span>
+    <span class="sport-name">Shot Put</span>
+    <span class="sport-type">Field Event</span>
+  </div>
+  <div class="sport-body">
+    <div class="gender-head"><div class="gender-pill gp-boys">👦 Boys</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Kartik Adsul</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">Siddharth Dumbre</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Om Bomble</span></div></div>
+    <div class="gender-head" style="margin-top:14px"><div class="gender-pill gp-girls">👧 Girls</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Arya More</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">Saee Kadam</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Aishwarya Jadhav</span></div></div>
+
+    <div class="lines">
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-h">🔥 Shot Put Intro</span><p class="stext">One step. One breath. One throw. <span class="p">pause</span> The Shot Put — where <em class="em">raw power meets perfect technique</em> and every inch counts. Boys — 2nd Runner Up: <span class="nm-b">Om Bomble!</span> <span class="p">applause</span> 1st Runner Up: <span class="nm-b">Siddharth Dumbre!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Boys Winner!</span><p class="stext">Shot Put Boys <span class="shout">CHAMPION</span> — who threw it <em class="em">furthest and finest</em> — <span class="p">pause 2s</span> — <span class="nm-b" style="font-size:17px">KARTIK ADSUL!! 🏆🏋️</span> <span class="p">applause!</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 Girls Shot Put</span><p class="stext">Girls — 2nd Runner Up: <span class="nm-g">Aishwarya Jadhav!</span> <span class="p">applause</span> 1st Runner Up: <span class="nm-g">Saee Kadam!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Girls Winner!</span><p class="stext">Shot Put Girls <span class="shout">CHAMPION</span> — <span class="p">pause 2s</span> — <span class="nm-g" style="font-size:17px">ARYA MORE!! 🏆🏋️</span> <span class="p">applause!</span></p></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─────────────────── DISCUS THROW ─────────────────── -->
+<div class="sport-block s-athletics">
+  <div class="sport-banner">
+    <span class="sport-emoji">🥏</span>
+    <span class="sport-name">Discus Throw</span>
+    <span class="sport-type">Field Event</span>
+  </div>
+  <div class="sport-body">
+    <div class="gender-head"><div class="gender-pill gp-boys">👦 Boys</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Siddharth Dumbre</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">Aditya Turakane</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Om Bomble</span></div></div>
+    <div class="gender-head" style="margin-top:14px"><div class="gender-pill gp-girls">👧 Girls</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Arya More</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">Maheshwari Magar</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Srushti Shinde</span></div></div>
+
+    <div class="lines">
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-h">🔥 Discus Intro</span><p class="stext">Spin. Release. <em class="em">Watch it soar.</em> <span class="p">pause</span> The Discus Throw is an art form — <em class="em">where rotation becomes distance and distance becomes glory.</em> Boys — 2nd Runner Up: <span class="nm-b">Om Bomble!</span> <span class="p">applause</span> 1st Runner Up: <span class="nm-b">Aditya Turakane!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-e">⚡ Boys Winner!</span><p class="stext">Discus Boys <span class="shout">CHAMPION</span> — a double medallist of this Meet — <span class="p">pause 2s</span> — <span class="nm-b" style="font-size:17px">SIDDHARTH DUMBRE!! 🏆🥏</span> <span class="p">applause!</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-gi">👧 Girls Discus</span><p class="stext">Girls — 2nd Runner Up: <span class="nm-g">Srushti Shinde!</span> <span class="p">applause</span> 1st Runner Up: <span class="nm-g">Maheshwari Magar!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-e">⚡ Girls Winner!</span><p class="stext">Discus Girls <span class="shout">CHAMPION</span> — <span class="p">pause 2s</span> — <span class="nm-g" style="font-size:17px">ARYA MORE!! 🏆🥏</span> <span class="p">applause!</span> Incredible — back-to-back champion in field events!</p></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─────────────────── JAVELIN ─────────────────── -->
+<div class="sport-block s-athletics">
+  <div class="sport-banner">
+    <span class="sport-emoji">🎯</span>
+    <span class="sport-name">Javelin Throw</span>
+    <span class="sport-type">Field Event</span>
+  </div>
+  <div class="sport-body">
+    <div class="gender-head"><div class="gender-pill gp-boys">👦 Boys</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Kartik Yennawar</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">Suraj Jadhav</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Yash Gore</span></div></div>
+    <div class="gender-head" style="margin-top:14px"><div class="gender-pill gp-girls">👧 Girls</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Yayati Jiotode</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">Saee Kadam</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Vishakha Gavali</span></div></div>
+
+    <div class="lines">
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-h">🔥 Javelin Intro</span><p class="stext">Run. Plant. Hurl. <span class="p">pause</span> The Javelin Throw — where <em class="em">the spear flies as far as the athlete's will carries it.</em> Boys — 2nd Runner Up: <span class="nm-b">Yash Gore!</span> <span class="p">applause</span> 1st Runner Up: <span class="nm-b">Suraj Jadhav!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Boys Winner!</span><p class="stext">Javelin Boys <span class="shout">CHAMPION</span> — who threw it <em class="em">into the sky and into the record books</em> — <span class="p">pause 2s</span> — <span class="nm-b" style="font-size:17px">KARTIK YENNAWAR!! 🏆🎯</span> <span class="p">applause!</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-gi">👧 Girls Javelin</span><p class="stext">Girls — 2nd Runner Up: <span class="nm-g">Vishakha Gavali!</span> <span class="p">applause</span> 1st Runner Up: <span class="nm-g">Saee Kadam!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-e">⚡ Girls Winner!</span><p class="stext">Javelin Girls <span class="shout">CHAMPION</span> — <span class="p">pause 2s</span> — <span class="nm-g" style="font-size:17px">YAYATI JIOTODE!! 🏆🎯</span> <span class="p">applause!</span></p></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─────────────────── STANDING BROAD JUMP ─────────────────── -->
+<div class="sport-block s-athletics">
+  <div class="sport-banner">
+    <span class="sport-emoji">🦘</span>
+    <span class="sport-name">Standing Broad Jump</span>
+    <span class="sport-type">Field Event</span>
+  </div>
+  <div class="sport-body">
+    <div class="gender-head"><div class="gender-pill gp-boys">👦 Boys</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Ayush Kudekar</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">Harshal Maske</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Rushikesh Wamane</span></div></div>
+    <div class="gender-head" style="margin-top:14px"><div class="gender-pill gp-girls">👧 Girls</div><div class="gender-rule"></div></div>
+    <div class="prize-row"><div class="prize-rank rank-1"><div class="rank-emoji">🥇</div><div class="rank-label">Winner</div></div><div class="prize-name"><span class="pname">Yayati Jiotode</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-2"><div class="rank-emoji">🥈</div><div class="rank-label">Runner Up</div></div><div class="prize-name"><span class="pname">Sanskruti Lodam</span></div></div>
+    <div class="prize-row"><div class="prize-rank rank-3"><div class="rank-emoji">🥉</div><div class="rank-label">2nd Runner</div></div><div class="prize-name"><span class="pname">Vishakha Gavali</span></div></div>
+
+    <div class="lines">
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-h">🔥 SBJ Intro</span><p class="stext">No run-up. No momentum. Just you — <em class="em">standing still, coiling every ounce of power,</em> and exploding into the air. <span class="p">pause</span> The Standing Broad Jump — pure explosive athleticism! Boys — 2nd Runner Up: <span class="nm-b">Rushikesh Wamane!</span> <span class="p">applause</span> 1st Runner Up: <span class="nm-b">Harshal Maske!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-e">⚡ Boys Winner!</span><p class="stext">Standing Broad Jump Boys <span class="shout">CHAMPION</span> — who leapt furthest of all — <span class="p">pause 2s</span> — <span class="nm-b" style="font-size:17px">AYUSH KUDEKAR!! 🏆🦘</span> <span class="p">applause!</span></p></div></div>
+      <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-gi">👧 Girls SBJ</span><p class="stext">Girls — 2nd Runner Up: <span class="nm-g">Vishakha Gavali!</span> <span class="p">applause</span> 1st Runner Up: <span class="nm-g">Sanskruti Lodam!</span> <span class="p">applause</span></p></div></div>
+      <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-e">⚡ Girls Winner!</span><p class="stext">Girls Standing Broad Jump <span class="shout">CHAMPION</span> — claiming her <em class="em">second gold of the day</em> — <span class="p">pause 2s</span> — <span class="nm-g" style="font-size:17px">YAYATI JIOTODE!! 🏆🦘</span> <span class="p">applause!</span> What an extraordinary athlete!</p></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     CLOSING
+══════════════════════════════════════════════ -->
+<div class="part-div">
+  <div class="part-label">🌠 Closing</div>
+  <div class="part-sub">End of Prize Distribution</div>
+</div>
+
+<div class="sec">
+  <div class="sec-head"><span class="sec-icon">🙌</span><span class="sec-title">Organizer Appreciation</span><div class="sec-rule"></div></div>
+
+  <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-w">🤗 Warm &amp; Genuine</span><p class="stext">Before we close — <span class="p">pause</span> a very special moment of gratitude. What we witnessed over these incredible days — <em class="em">18 sports, 69 prizes, hundreds of athletes</em> — did not happen by accident.</p></div></div>
+  <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-p">💚 Celebratory</span><p class="stext">It happened because of the <em class="em">vision, the planning, and the sheer tireless effort</em> of our Department of Sports and Physical Education — led by <span class="nm">Prashant S. Londhe sir</span> — and every volunteer and coordinator behind the scenes. <span class="p">lead a dedicated applause for them</span></p></div></div>
+
+  <div class="sec-head" style="margin-top:32px"><span class="sec-icon">🌠</span><span class="sec-title">Final Farewell</span><div class="sec-rule"></div></div>
+
+  <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-c">🌙 Nostalgic</span><p class="stext">As we draw the curtains on the <em class="em">Eternity Sports Meet 2025-26</em> — <span class="p">slow down · emotive</span> — we hope these memories, these victories, these friendships made on the field — <em class="em">stay with every one of you for a lifetime.</em></p></div></div>
+  <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-ch">🌈 Hopeful</span><p class="stext">Carry this spirit — this <em class="em">discipline, this passion, this sportsmanship</em> — <span class="p">pause</span> into your classrooms, your careers, your lives. Because <span class="shout">ADYPSOE doesn't just build engineers — it builds champions.</span></p></div></div>
+  <div class="line a1"><div class="lwho"><div class="alabel">ANCHOR 1</div></div><div class="lbody"><span class="tone t-g">🏆 Grateful</span><p class="stext">On behalf of everyone here tonight — <span class="p">look around the room</span> — <em class="em">thank you. For your energy, your cheers, your support, and your incredible sportsmanship. You made Eternity — eternal.</em> <span class="p">pause</span></p></div></div>
+  <div class="line a2"><div class="lwho"><div class="alabel">ANCHOR 2</div></div><div class="lbody"><span class="tone t-w">🌟 Send-Off</span><p class="stext">Wishing each and every one of you a <em class="em">wonderful evening and many more victories ahead.</em> Take care of each other. 💛 <span class="p">smile genuinely</span></p></div></div>
+  <div class="line both"><div class="lwho"><div class="alabel">BOTH</div></div><div class="lbody"><span class="tone t-g">🇮🇳 United</span><p class="stext" style="font-size:22px;font-weight:700;letter-spacing:3px">जय हिंद! 🙌</p></div></div>
+</div>
+
+<div class="finale">
+  <span class="finale-big">Eternity 2025–26</span>
+  <p>18 Sports · 69 Prizes · 2 Anchors · Script Complete</p>
+  <p style="margin-top:8px;font-size:10px;color:rgba(110,107,136,0.5)">ADYPSOE · Department of Sports &amp; Physical Education</p>
+</div></div>
+
+</div>
+</body>
+</html>
